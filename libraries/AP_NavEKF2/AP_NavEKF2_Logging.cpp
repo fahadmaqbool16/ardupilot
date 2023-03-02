@@ -1,5 +1,6 @@
 #include "AP_NavEKF2.h"
 #include "AP_NavEKF2_core.h"
+#include <GCS_MAVLink/GCS.h>
 
 #include <AP_Logger/AP_Logger.h>
 #include <AP_DAL/AP_DAL.h>
@@ -76,8 +77,106 @@ void NavEKF2_core::Log_Write_NKF2(uint64_t time_us) const
         magZ    : (int16_t)(magXYZ.z),
         index   : magSelectIndex
     };
+    // GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Inside The logging function NKF2");
+
     AP::logger().WriteBlock(&pkt2, sizeof(pkt2));
 }
+
+void NavEKF2_core::Log_Write_CovarianceMatrix(uint64_t time_us) const
+{
+    AP::logger().Write("COV0", "TimeUS,P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11", "Qffffffffffff",
+                                        time_us,
+                                        double(P[0][0]),
+                                        double(P[1][1]),
+                                        double(P[2][2]),
+                                        double(P[3][3]),
+                                        double(P[4][4]),
+                                        double(P[5][5]),
+                                        double(P[6][6]),
+                                        double(P[7][7]),
+                                        double(P[8][8]),
+                                        double(P[9][9]),
+                                        double(P[10][10]),
+                                        double(P[11][11])
+                                        );
+
+    AP::logger().Write("COV1", "TimeUS,P12,P13,P14,P15,P16,P17,P18,P19,P20,P21,P22,P23", "Qffffffffffff",
+                                        time_us,
+                                        double(P[12][12]),
+                                        double(P[13][13]),
+                                        double(P[14][14]),
+                                        double(P[15][15]),
+                                        double(P[16][16]),
+                                        double(P[17][17]),
+                                        double(P[18][18]),
+                                        double(P[19][19]),
+                                        double(P[20][20]),
+                                        double(P[21][21]),
+                                        double(P[22][22]),
+                                        double(P[23][23])    
+                                        );
+
+
+}
+
+void NavEKF2_core::Log_Write_FilterFaultStatusFlags(uint64_t time_us) const
+{
+    AP::logger().Write("FFSF", "TUS,xm,ym,zm,aspd,Beta,nv,ev,dv,np,ep,dp,yaw,decl,xf,yf", "QBBBBBBBBBBBBBBB",
+                                        time_us,
+                                        uint8_t(faultStatus.bad_xmag),
+                                        uint8_t(faultStatus.bad_ymag),
+                                        uint8_t(faultStatus.bad_zmag),
+                                        uint8_t(faultStatus.bad_airspeed),
+                                        uint8_t(faultStatus.bad_sideslip),
+                                        uint8_t(faultStatus.bad_nvel),
+                                        uint8_t(faultStatus.bad_evel),
+                                        uint8_t(faultStatus.bad_dvel),
+                                        uint8_t(faultStatus.bad_npos),
+                                        uint8_t(faultStatus.bad_epos),
+                                        uint8_t(faultStatus.bad_dpos),
+                                        uint8_t(faultStatus.bad_yaw),
+                                        uint8_t(faultStatus.bad_decl),
+                                        uint8_t(faultStatus.bad_xflow),
+                                        uint8_t(faultStatus.bad_yflow)
+                                        );
+
+
+}
+
+
+void NavEKF2_core::Log_Write_NavFilterStatusFlags(uint64_t time_us) const
+{
+    AP::logger().Write("NFS0", "TUS,att,hv,vv,hpos_r,hpos_a,v_pos,alt,pos_mod,p_hpos_r,p_hpos_a", "QBBBBBBBBBB",
+                                        time_us,
+                                        uint8_t(filterStatus.flags.attitude),
+                                        uint8_t(filterStatus.flags.horiz_vel),
+                                        uint8_t(filterStatus.flags.vert_vel),
+                                        uint8_t(filterStatus.flags.horiz_pos_rel),
+                                        uint8_t(filterStatus.flags.horiz_pos_abs),
+                                        uint8_t(filterStatus.flags.vert_pos),
+                                        uint8_t(filterStatus.flags.terrain_alt),
+                                        uint8_t(filterStatus.flags.const_pos_mode),
+                                        uint8_t(filterStatus.flags.pred_horiz_pos_rel),
+                                        uint8_t(filterStatus.flags.pred_horiz_pos_abs)
+                                        );
+GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Inside The logging function NKF2");
+
+AP::logger().Write("NFS1", "TUS,tk_d,tk,tdwn,gps,gps_g,gps_gd,init,r_aspd,dead_reckon", "QBBBBBBBBB",
+                                        time_us,
+                                        uint8_t(filterStatus.flags.takeoff_detected),
+                                        uint8_t(filterStatus.flags.takeoff),
+                                        uint8_t(filterStatus.flags.touchdown),
+                                        uint8_t(filterStatus.flags.using_gps),
+                                        uint8_t(filterStatus.flags.gps_glitching),
+                                        uint8_t(filterStatus.flags.gps_quality_good),
+                                        uint8_t(filterStatus.flags.initalized),
+                                        uint8_t(filterStatus.flags.rejecting_airspeed),
+                                        uint8_t(filterStatus.flags.dead_reckoning)
+                                        );
+
+
+}
+
 
 void NavEKF2_core::Log_Write_NKF3(uint64_t time_us) const
 {
@@ -312,7 +411,9 @@ void NavEKF2_core::Log_Write(uint64_t time_us)
     Log_Write_NKF3(time_us);
     Log_Write_NKF4(time_us);
     Log_Write_NKF5(time_us);
-
+    Log_Write_CovarianceMatrix(time_us);
+    Log_Write_FilterFaultStatusFlags(time_us);
+    Log_Write_NavFilterStatusFlags(time_us);
     Log_Write_Quaternion(time_us);
     Log_Write_GSF(time_us);
 
