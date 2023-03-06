@@ -299,6 +299,8 @@ bool JSBSim::open_control_socket(void)
         return true;
     }
     if (!sock_control.connect("127.0.0.1", control_port)) {
+    	printf("Error while connecting to socket at 127.0.0.1:%u - Error: %s\n", 
+                                             control_port, strerror(errno));
         return false;
     }
     printf("Opened JSBSim control socket\n");
@@ -323,6 +325,8 @@ bool JSBSim::open_fdm_socket(void)
         return true;
     }
     if (!sock_fgfdm.bind("127.0.0.1", fdm_port)) {
+        printf("Error while connecting to socket at 127.0.0.1:%u - Error: %s\n", 
+                                             fdm_port, strerror(errno));
         check_stdout();
         return false;
     }

@@ -20,5 +20,10 @@ nice fgfs \
     --fog-disable \
     --disable-specular-highlight \
     --disable-anti-alias-hud \
+    --disable-ai-traffic \
+    --disable-random-vegetation \
+    --disable-random-buildings \
+    --disable-rembrandt \
+    --disable-horizon-effect \
     --wind=0@0 \
     $*
