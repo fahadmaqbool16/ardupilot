@@ -238,7 +238,6 @@ public:
      7 = filter is not initialised
     */
     void  getFilterFaults(uint16_t &faults) const;
-
     /*
     return filter gps quality check status
     */
@@ -997,10 +996,10 @@ private:
     bool gpsDataToFuse;             // true when valid GPS data has arrived at the fusion time horizon.
     bool magDataToFuse;             // true when valid magnetometer data has arrived at the fusion time horizon
     enum AidingMode {
-        AID_ABSOLUTE=0,    // GPS or some other form of absolute position reference aiding is being used (optical flow may also be used in parallel) so position estimates are absolute.
+    	AID_ABSOLUTE=0,    // GPS or some other form of absolute position reference aiding is being used (optical flow may also be used in parallel) so position estimates are absolute.
         AID_NONE=1,       // no aiding is being used so only attitude and height estimates are available. Either constVelMode or constPosMode must be used to constrain tilt drift.
-        AID_RELATIVE=2,    // only optical flow aiding is being used so position estimates will be relative
-    };
+        AID_RELATIVE=2    // only optical flow aiding is being used so position estimates will be relative
+                    };
     AidingMode PV_AidingMode;       // Defines the preferred mode for aiding of velocity and position estimates from the INS
     AidingMode PV_AidingModePrev;   // Value of PV_AidingMode from the previous frame - used to detect transitions
     bool gndOffsetValid;            // true when the ground offset state can still be considered valid
@@ -1205,4 +1204,7 @@ private:
     void Log_Write_Beacon(uint64_t time_us);
     void Log_Write_Timing(uint64_t time_us);
     void Log_Write_GSF(uint64_t time_us) const;
+    void Log_Write_CovarianceMatrix(uint64_t time_us) const;
+    void Log_Write_FilterFaultStatusFlags(uint64_t time_us) const;
+    void Log_Write_NavFilterStatusFlags(uint64_t time_us) const;
 };
