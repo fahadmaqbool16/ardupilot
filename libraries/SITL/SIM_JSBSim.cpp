@@ -157,16 +157,16 @@ bool JSBSim::create_templates(void)
             "<initialize name=\"Start up location\">\n"
             "  <latitude unit=\"DEG\" type=\"geodetic\"> %f </latitude>\n"
             "  <longitude unit=\"DEG\"> %f </longitude>\n"
-            "  <altitude unit=\"M\"> 1.3 </altitude>\n"
+            "  <altitude unit=\"M\"> 49 </altitude>\n"
             "  <vt unit=\"FT/SEC\"> 0.0 </vt>\n"
             "  <gamma unit=\"DEG\"> 0.0 </gamma>\n"
             "  <phi unit=\"DEG\"> 0.0 </phi>\n"
-            "  <theta unit=\"DEG\"> 13.0 </theta>\n"
+            "  <theta unit=\"DEG\"> 0.0 </theta>\n"
             "  <psi unit=\"DEG\"> %f </psi>\n"
             "</initialize>\n",
             home.lat*1.0e-7,
             home.lng*1.0e-7,
-            degrees(y));
+            0.0);
     fclose(f);
 
     created_templates = true;
